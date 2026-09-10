@@ -24,6 +24,12 @@ const userSchema = new mongoose.Schema({
         trim: true,
         index: true
     },
+    phoneNumber: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
+},
 
     password: {
         type: String,
@@ -31,11 +37,7 @@ const userSchema = new mongoose.Schema({
         minlength: 6,
 
     },
-    role: {
-    type: String,
-    enum: ["admin", "manager", "staff"],
-    default: "staff"
-},
+    
     
     refreshToken: {
         type: String
@@ -57,7 +59,8 @@ userSchema.methods.generateAccessToken = function () {
             _id: this._id,
             email: this.email,
             username: this.username,
-            fullname: this.fullname
+            fullname: this.fullname,
+        
 
         },
         process.env.ACCESS_TOKEN_SECRET,

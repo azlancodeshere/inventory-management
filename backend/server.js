@@ -1,21 +1,41 @@
 import express from "express";
 import dotenv from "dotenv";
-import connectDB from "./db/db.js";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+
+import userRoutes from "./src/routes/user.route.js";
+import { ApiError } from "./utils/ApiError.js";
+import connectDB from "./db/db.js"
 
 dotenv.config();
 
-connectDB();
-
 const app = express();
 
-app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("Inventory Management API is running");
+app.use(
+    cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+    })
+);
+
+app.use(express.json());
+app.use(cookieParser());
+
+
+app.use("/api/users", userRoutes);
+
+
+app.use((req, res, next) => {
+    res.status(404).json(
+        new ApiError(404, "Route not found")
+    );
 });
 
-const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+connectDB();
+
+
+app.listen(process.env.PORT, () => {
+    console.log(`Server is running on port ${process.env.PORT}`);
 });

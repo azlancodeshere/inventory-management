@@ -1,5 +1,4 @@
-
-import { User } from "../models/user.model.js"
+import { User } from "../models/user.models.js"
 import { ApiResponse } from "../../utils/ApiResponse.js"
 import { ApiError } from "../../utils/ApiError.js"
 import jwt from "jsonwebtoken"
@@ -107,10 +106,10 @@ const refreshAccessToken = async (req, res) => {
 
 const registerUser = async (req, res) => {
     try {
-        const { email, password, username, fullname,role} = req.body
+        const { email, password, username, fullname,phoneNumber} = req.body
        
 
-        if (![email, password, username, fullname, role].some((field) => !field || field.trim() === "")) {
+        if ([email, password, username, fullname,phoneNumber].some((field) => !field || field.trim() === "")) {
             throw new ApiError(400, "All fields are required")
         }
 
@@ -129,7 +128,8 @@ const registerUser = async (req, res) => {
             password,
             fullname,
             username,
-            role:role || "staff"
+            phoneNumber
+           
              
         })
 
