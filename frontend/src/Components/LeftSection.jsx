@@ -8,8 +8,8 @@ import {
 
 const LeftSection = () => {
   return (
-    <div>
-        <section className="hidden lg:flex relative overflow-hidden bg-gradient-to-br from-[#0d2d58] via-[#123f78] to-[#1764ae] px-8 xl:px-14 py-12 xl:py-14 text-white">
+    <div className="h-full">
+        <section className="hidden lg:flex h-full relative overflow-hidden bg-gradient-to-br from-[#0d2d58] via-[#123f78] to-[#1764ae] px-8 xl:px-14 py-12 xl:py-14 text-white">
 
                         {/* Background decoration */}
                         <div className="absolute -right-52 -bottom-52 w-[600px] h-[600px] rounded-full bg-white/5" />
