@@ -11,18 +11,58 @@ import { useState } from "react";
 import { Navbar } from "../Components/Navbar";
 import LeftSection from "../Components/LeftSection";
 import RightSection from "../Components/RightSection";
-
+import api from "../api/api.js"
+import {Link, useNavigate} from "react-router-dom"
 
 function RegisterPage() {
+
+    const navigate= useNavigate();
+
 
     const [formData, setFormData] = useState({
         username:"",
         fullname:"",
         email:"",
-        phone:"",
+        phoneNumber:"",
         password:"",
         confirmPassword:""
     })
+
+    const handleChange= (e)=>{
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        })
+    }
+
+
+    const handleSubmit = async (e)=>{
+        e.preventDefault();
+        // Handle form submission logic here
+
+        console.log(formData)
+
+        if(formData.password  !== formData.confirmPassword){
+            alert("password does not match with confirmPassword")
+            return;
+        }
+
+        try {
+            const response = await api.post("/users/register", formData);
+            console.log(response.data)
+
+            navigate("/home")
+
+
+        } catch(error){
+            console.log("Error in registration", error)    
+
+        }
+
+
+    }
+
+
 
     return (
         <div className="min-h-screen bg-slate-100 text-slate-900">
@@ -51,7 +91,10 @@ function RegisterPage() {
                                         Join StockFlow and start managing your inventory today.
                                     </p>
 
-                                    <form className="mt-7">
+                                    <form 
+                                    onSubmit={handleSubmit}
+                                    
+                                    className="mt-7">
 
                                         <div>
                                             <label
@@ -69,9 +112,12 @@ function RegisterPage() {
                                                 />
 
                                                 <input
-                                                    id="fullname"
+                                                    
                                                     name="fullname"
                                                     type="text"
+                                                   id="fullname"
+                                                    value={formData.fullname}
+                                                    onChange={handleChange}
                                                     placeholder="Enter your full name"
                                                     autoComplete="name"
                                                     className="w-full min-w-0 bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
@@ -98,7 +144,9 @@ function RegisterPage() {
                                                 />
 
                                                 <input
-                                                    id="username"
+                                                  id="username"
+                                                  value={formData.username}
+                                                  onChange={handleChange}
                                                     name="username"
                                                     type="text"
                                                     placeholder="Choose a username"
@@ -128,6 +176,8 @@ function RegisterPage() {
 
                                                 <input
                                                     id="email"
+                                                    onChange={handleChange}
+                                                    value={formData.email}
                                                     name="email"
                                                     type="email"
                                                     placeholder="you@example.com"
@@ -157,7 +207,9 @@ function RegisterPage() {
 
                                                 <input
                                                     id="phone"
-                                                    name="phone"
+                                                    onChange={handleChange}
+                                                    value={formData.phoneNumber}
+                                                    name="phoneNumber"
                                                     type="tel"
                                                     placeholder="+91 9876543210"
                                                     autoComplete="tel"
@@ -186,6 +238,8 @@ function RegisterPage() {
 
                                                 <input
                                                     id="password"
+                                                    onChange={handleChange}
+                                                    value={formData.password}
                                                     name="password"
                                                     type="password"
                                                     placeholder="Create a strong password"
@@ -225,6 +279,8 @@ function RegisterPage() {
                                                     placeholder="Confirm your password"
                                                     autoComplete="new-password"
                                                     className="w-full min-w-0 bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+                                                    value={formData.confirmPassword}
+                                                    onChange={handleChange}
                                                 />
 
                                                 <Eye
