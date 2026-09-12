@@ -13,7 +13,7 @@ const logout = async () =>{
      try {
         await api.post("/users/logout");
         setUser(null)
-        isAuthenticated(false)
+        setIsAuthenticated(false)
      } catch (error) {
 
         console.log("logout error:", error)
@@ -52,9 +52,9 @@ const authValue ={
 }
 
 return(
-    <authContext.Provider value={authValue}>
+    <AuthContext.Provider value={authValue}>
         {children}
-    </authContext.Provider>
+    </AuthContext.Provider>
 );
 
 }

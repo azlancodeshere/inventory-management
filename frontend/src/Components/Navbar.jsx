@@ -12,9 +12,11 @@ import {
     UserPlus,
     Phone
 } from "lucide-react";
+import { useNavigate, Link } from 'react-router-dom';
 
 
 export const Navbar = () => {
+    const navigate= useNavigate()
   return (
     <nav className="h-[72px] bg-white border-b border-slate-200">
                 <div className="h-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between">
@@ -44,6 +46,7 @@ export const Navbar = () => {
 
                         <a
                             href="#"
+                            onClick={() => navigate("/home")}
                             className="text-sm text-slate-600 hover:text-blue-600 transition"
                         >
                             Home
@@ -70,11 +73,16 @@ export const Navbar = () => {
                             Contact
                         </a>
 
-                        <button className="px-5 xl:px-6 py-2.5 rounded-lg border border-blue-600 text-blue-600 text-sm font-medium hover:bg-blue-50 transition">
+                        <button 
+                        onClick={()=>navigate("/login")}
+                        className="px-5 xl:px-6 py-2.5 rounded-lg border border-blue-600 text-blue-600 text-sm font-medium hover:bg-blue-50 transition">
                             Login
                         </button>
 
-                        <button className="px-5 xl:px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition shadow-md shadow-blue-600/20">
+                        <button 
+                        onClick={()=>navigate("/register")}
+                        
+                        className="px-5 xl:px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition shadow-md shadow-blue-600/20">
                             Register
                         </button>
 

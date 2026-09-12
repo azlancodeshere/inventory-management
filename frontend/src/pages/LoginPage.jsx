@@ -10,7 +10,7 @@ import LeftSection from "../Components/LeftSection";
 import RightSection from "../Components/RightSection";
 import api from "../api/api.js"
 import { useContext, useState } from "react";
-import HomePage from "./HomePage";
+
 import {Link, useNavigate} from "react-router-dom"
 
 import { AuthContext } from "../context/AuthContext.jsx";
