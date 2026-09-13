@@ -78,19 +78,7 @@ const SideBar = () => {
                     </div>
 
 
-                    {/* Logout */}
-                    <button 
-                    onClick={async () =>{
-                        await logout();
-                        navigate("/login")}}
-                        
-                    className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-red-500 hover:bg-red-50">
-                        <LogOut size={19} />
-
-                        <span className="text-sm font-medium">
-                            Logout
-                        </span>
-                    </button>
+                
 
                 </aside>
   )
