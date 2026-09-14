@@ -107,7 +107,7 @@ const getSingleProduct = async (req,res) =>{
 const getAllProducts = async (req,res) =>{
      try {
 
-        const products = await Product.find()
+        const products = await Product.find();
 
         return res.status(200).json(
             new ApiResponse(
@@ -207,7 +207,7 @@ if (lowStockThreshold !== undefined) {
             if(!product){
                 throw new ApiError(
                     404,
-                    "Products details are not found",
+                    "Product details are not found",
                     product
                 )
             }
@@ -278,3 +278,5 @@ export {
      updateProduct,
      deleteProduct
 }
+
+
