@@ -20,10 +20,12 @@ import Cards from "./cards/Cards";
 import Activity from "./Activity/Activity";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
+import {Link, useNavigate} from "react-router-dom"
 
 function HomePage() {
 
     const {user, isAuthenticated} = useContext(AuthContext)
+    const navigate = useNavigate()
     return (
         <div className="min-h-screen bg-gray-100">
 
@@ -54,7 +56,10 @@ function HomePage() {
                             </p>
                         </div>
 
-                        <button className="flex items-center justify-center gap-2 bg-black text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800">
+                        <button
+                        onClick={() =>navigate("/create-product")}
+                        
+                        className="flex items-center justify-center gap-2 bg-black text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800">
                             <Plus size={18} />
                             Add Product
                         </button>
