@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import userRoutes from "./src/routes/user.route.js";
+import productRoutes from "./src/routes/product.route.js"
 import { ApiError } from "./utils/ApiError.js";
 import connectDB from "./db/db.js"
 
@@ -25,6 +26,7 @@ app.use(cookieParser());
 
 
 app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes)
 
 
 app.use((req, res, next) => {
