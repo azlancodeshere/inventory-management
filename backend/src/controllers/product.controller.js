@@ -199,7 +199,8 @@ if (lowStockThreshold !== undefined) {
                           
                 },
                 {
-                    new:true,
+                    //new:true,
+                    returnDocument: "after",
                     runValidators:true
                 }
             )

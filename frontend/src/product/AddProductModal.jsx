@@ -3,11 +3,9 @@ import { useState, useEffect } from "react";
 import api from "../api/api.js";
 import { useNavigate } from "react-router-dom";
 
-
-function AddProductModal({ product }) {
+function AddProductModal({ product, onClose }) {
 
     const navigate = useNavigate();
-
 
     const [formData, setFormData] = useState({
         productname: "",
@@ -20,7 +18,7 @@ function AddProductModal({ product }) {
     });
 
 
-   
+    // Existing product ka data form mein fill karna
     useEffect(() => {
 
         if (product) {
@@ -40,7 +38,7 @@ function AddProductModal({ product }) {
     }, [product]);
 
 
-    
+   
     const handleChange = (e) => {
 
         setFormData({
@@ -51,13 +49,15 @@ function AddProductModal({ product }) {
     };
 
 
-   
+    
     const handleSubmit = async (e) => {
 
         e.preventDefault();
 
+        console.log("Submit clicked");
+        console.log("Form Data:", formData);
 
-       
+
         if (
             !formData.category ||
             !formData.description ||
@@ -76,20 +76,20 @@ function AddProductModal({ product }) {
 
         try {
 
-            // EXISTING PRODUCT
+            // UPDATE EXISTING PRODUCT
             if (product) {
 
+               
                 const response = await api.patch(
                     `/products/update-product/${product._id}`,
                     formData
                 );
 
-
-                console.log(response.data);
+                console.log("UPDATE RESPONSE:", response.data);
 
                 alert("Product updated successfully");
 
-                navigate("/all-products");
+                onClose(response.data.data);
 
             }
 
@@ -97,13 +97,14 @@ function AddProductModal({ product }) {
             
             else {
 
+                console.log("Creating new product");
+
                 const response = await api.post(
                     "/products/create-product",
                     formData
                 );
 
-
-                console.log(response.data);
+                console.log("CREATE RESPONSE:", response.data);
 
                 alert("Product created successfully");
 
@@ -115,6 +116,11 @@ function AddProductModal({ product }) {
         } catch (error) {
 
             console.log("Error in product:", error);
+
+            console.log(
+                "ERROR RESPONSE:",
+                error.response?.data
+            );
 
             alert(
                 error.response?.data?.message ||
@@ -128,18 +134,18 @@ function AddProductModal({ product }) {
 
     return (
 
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-3 sm:px-4 py-4">
 
-            <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl">
+           
+            <div className="w-full max-w-2xl max-h-[95vh] overflow-y-auto bg-white rounded-xl sm:rounded-2xl shadow-xl">
 
 
-              
+                
+                <div className="sticky top-0 z-10 bg-white flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200">
 
-                <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
+                    <div className="flex items-center gap-3 min-w-0">
 
-                    <div className="flex items-center gap-3">
-
-                        <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <div className="shrink-0 w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
 
                             <Package
                                 size={20}
@@ -149,9 +155,9 @@ function AddProductModal({ product }) {
                         </div>
 
 
-                        <div>
+                        <div className="min-w-0">
 
-                            <h2 className="text-lg font-semibold text-gray-900">
+                            <h2 className="text-base sm:text-lg font-semibold text-gray-900 truncate">
 
                                 {product
                                     ? "Update Product"
@@ -161,7 +167,7 @@ function AddProductModal({ product }) {
                             </h2>
 
 
-                            <p className="text-sm text-gray-500">
+                            <p className="text-xs sm:text-sm text-gray-500 truncate">
 
                                 {product
                                     ? "Update your product details"
@@ -175,12 +181,17 @@ function AddProductModal({ product }) {
                     </div>
 
 
-                
-
+                   
                     <button
                         type="button"
-                        onClick={() => navigate("/all-products")}
-                        className="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-gray-100"
+                        onClick={() => {
+                            if (product) {
+                                onClose();
+                            } else {
+                                navigate("/all-products");
+                            }
+                        }}
+                        className="shrink-0 w-9 h-9 rounded-lg flex items-center justify-center hover:bg-gray-100"
                     >
 
                         <X
@@ -193,17 +204,17 @@ function AddProductModal({ product }) {
                 </div>
 
 
-               
-
+                {/* Form */}
                 <form
                     onSubmit={handleSubmit}
-                    className="p-6"
+                    className="p-4 sm:p-6"
                 >
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
 
 
-                        
+                      
                         <div>
 
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -216,14 +227,13 @@ function AddProductModal({ product }) {
                                 value={formData.productname}
                                 onChange={handleChange}
                                 placeholder="Enter product name"
-                                className="w-full h-11 px-3 border border-gray-200 rounded-lg outline-none focus:border-black"
+                                className="w-full h-11 px-3 border border-gray-200 rounded-lg outline-none focus:border-black text-sm sm:text-base"
                             />
 
                         </div>
 
 
                        
-
                         <div>
 
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -236,13 +246,11 @@ function AddProductModal({ product }) {
                                 value={formData.sku}
                                 onChange={handleChange}
                                 placeholder="e.g. KB-001"
-                                className="w-full h-11 px-3 border border-gray-200 rounded-lg outline-none focus:border-black"
+                                className="w-full h-11 px-3 border border-gray-200 rounded-lg outline-none focus:border-black text-sm sm:text-base"
                             />
 
                         </div>
 
-
-                    
 
                         <div>
 
@@ -254,7 +262,7 @@ function AddProductModal({ product }) {
                                 name="category"
                                 value={formData.category}
                                 onChange={handleChange}
-                                className="w-full h-11 px-3 border border-gray-200 rounded-lg outline-none focus:border-black bg-white"
+                                className="w-full h-11 px-3 border border-gray-200 rounded-lg outline-none focus:border-black bg-white text-sm sm:text-base"
                             >
 
                                 <option value="">
@@ -286,7 +294,7 @@ function AddProductModal({ product }) {
                         </div>
 
 
-                     
+                        
                         <div>
 
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -305,7 +313,7 @@ function AddProductModal({ product }) {
                                     value={formData.price}
                                     onChange={handleChange}
                                     placeholder="0.00"
-                                    className="w-full h-11 pl-8 pr-3 border border-gray-200 rounded-lg outline-none focus:border-black"
+                                    className="w-full h-11 pl-8 pr-3 border border-gray-200 rounded-lg outline-none focus:border-black text-sm sm:text-base"
                                 />
 
                             </div>
@@ -313,7 +321,7 @@ function AddProductModal({ product }) {
                         </div>
 
 
-
+                     
                         <div>
 
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -326,14 +334,13 @@ function AddProductModal({ product }) {
                                 value={formData.quantity}
                                 onChange={handleChange}
                                 placeholder="Enter quantity"
-                                className="w-full h-11 px-3 border border-gray-200 rounded-lg outline-none focus:border-black"
+                                className="w-full h-11 px-3 border border-gray-200 rounded-lg outline-none focus:border-black text-sm sm:text-base"
                             />
 
                         </div>
 
 
                        
-
                         <div>
 
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -346,7 +353,7 @@ function AddProductModal({ product }) {
                                 value={formData.lowStockThreshold}
                                 onChange={handleChange}
                                 placeholder="10"
-                                className="w-full h-11 px-3 border border-gray-200 rounded-lg outline-none focus:border-black"
+                                className="w-full h-11 px-3 border border-gray-200 rounded-lg outline-none focus:border-black text-sm sm:text-base"
                             />
 
                             <p className="text-xs text-gray-400 mt-1">
@@ -358,9 +365,7 @@ function AddProductModal({ product }) {
                     </div>
 
 
-                  
-
-                    <div className="mt-5">
+                    <div className="mt-4 sm:mt-5">
 
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Description
@@ -372,26 +377,25 @@ function AddProductModal({ product }) {
                             onChange={handleChange}
                             rows="4"
                             placeholder="Enter product description..."
-                            className="w-full px-3 py-3 border border-gray-200 rounded-lg outline-none resize-none focus:border-black"
+                            className="w-full px-3 py-3 border border-gray-200 rounded-lg outline-none resize-none focus:border-black text-sm sm:text-base"
                         />
 
                     </div>
 
 
-                  
-
-                    <div className="mt-5">
+                   
+                    <div className="mt-4 sm:mt-5">
 
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Product Image
                         </label>
 
-                        <div className="border-2 border-dashed border-gray-200 rounded-xl p-7 text-center hover:border-gray-400 cursor-pointer">
+                        <div className="border-2 border-dashed border-gray-200 rounded-xl p-5 sm:p-7 text-center hover:border-gray-400 cursor-pointer">
 
-                            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
 
                                 <Upload
-                                    size={21}
+                                    size={20}
                                     className="text-gray-500"
                                 />
 
@@ -411,26 +415,30 @@ function AddProductModal({ product }) {
                     </div>
 
 
-                   
+                    
+                    <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3 mt-5 pt-4 border-t border-gray-200">
 
-                    <div className="flex items-center justify-end gap-3 mt-5 pt-4 border-t border-gray-200">
 
-
-                        
-
+                       
                         <button
                             type="button"
-                            onClick={() => navigate("/all-products")}
-                            className="px-5 py-2.5 rounded-lg border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                            onClick={() => {
+                                if (product) {
+                                    onClose();
+                                } else {
+                                    navigate("/all-products");
+                                }
+                            }}
+                            className="w-full sm:w-auto px-5 py-2.5 rounded-lg border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-100"
                         >
                             Cancel
                         </button>
 
 
-                      
+                        
                         <button
                             type="submit"
-                            className="px-5 py-2.5 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-800"
+                            className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-800"
                         >
 
                             {product
@@ -451,6 +459,5 @@ function AddProductModal({ product }) {
     );
 
 }
-
 
 export default AddProductModal;
