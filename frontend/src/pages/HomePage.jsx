@@ -19,13 +19,33 @@ import SideBar from "../Components/SideBar";
 import Cards from "./cards/Cards";
 import Activity from "./Activity/Activity";
 import { AuthContext } from "../context/AuthContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import {Link, useNavigate} from "react-router-dom"
+import api from "../api/api";
 
 function HomePage() {
 
     const {user, isAuthenticated} = useContext(AuthContext)
     const navigate = useNavigate()
+    const [products, setProducts] = useState([])
+
+
+    useEffect (()=>{
+        const getProducts = async () =>{
+            try {
+                const response = await api.get("/products/all-products");
+                setProducts(response.data.data);
+
+                
+            } catch (error) {
+                console.log("Error in getting products:", error)
+                
+            }
+        }
+
+        getProducts();
+
+    }, [])
     return (
         <div className="min-h-screen bg-gray-100">
 
@@ -68,7 +88,7 @@ function HomePage() {
   
 
                     {/* ================= STAT CARDS ================= */}
-                  <Cards/>
+                  <Cards products={products}/>
 
 
                     {/* ================= LOWER SECTION ================= */}

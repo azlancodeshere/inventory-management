@@ -7,28 +7,30 @@ const AllProductsPage = () => {
 
     const [products, setProducts] = useState([]);
     const [newProducts, setNewProducts] = useState(null);
+    const [search, setSearch] = useState("");
+    const [category, setCategory] = useState("")
 
 
-   
-        const getProducts = async () => {
 
-            try {
+    const getProducts = async () => {
 
-                const response = await api.get("/products/all-products");
+        try {
 
-                console.log(response.data);
+            const response = await api.get("/products/all-products");
 
-                setProducts(response.data.data);
+            console.log(response.data);
 
-            } catch (error) {
+            setProducts(response.data.data);
 
-                console.log("Error in getting all products:", error);
+        } catch (error) {
 
-            }
+            console.log("Error in getting all products:", error);
 
-        };
+        }
 
- useEffect(() => {
+    };
+
+    useEffect(() => {
 
         getProducts();
 
@@ -37,7 +39,7 @@ const AllProductsPage = () => {
 
 
 
-    
+
     const addProducts = (product) => {
         setNewProducts(product);
     };
@@ -61,6 +63,28 @@ const AllProductsPage = () => {
     }
 
 
+    const searchProducts = products.filter((product) =>{
+
+       const matchSearch= product.productname
+            .toLowerCase()
+            .includes(search.toLocaleLowerCase()) ||
+
+            product.sku
+            .toLowerCase()
+            .includes(search.toLocaleLowerCase()) 
+
+            // product.category
+            // .toLowerCase()
+            // .includes(search.toLocaleLowerCase())
+
+            const matchCategory = category === "" || product.category === category;
+
+      return matchSearch && matchCategory;
+
+})
+
+            
+
 
 
 
@@ -71,7 +95,7 @@ const AllProductsPage = () => {
             <div className="max-w-7xl mx-auto">
 
 
-                
+
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-5 sm:mb-6">
 
                     <div>
@@ -97,20 +121,59 @@ const AllProductsPage = () => {
 
                     </div>
 
+
+                    <div className="text-xs sm:text-sm text-gray-500">
+                        Total Stock:{" "}
+                        <span className="font-semibold text-gray-800">
+                            {products.reduce(
+                                (total, product) => total + product.quantity,
+                                0
+                            )}
+                        </span>
+                    </div>
+
                 </div>
 
 
-             
+                <div className="mb-5 flex flex-col sm:flex-row gap-3">
+
+    {/* Search */}
+    <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search products..."
+        className="w-full sm:max-w-md h-11 px-4 bg-white border border-gray-200 rounded-lg outline-none focus:border-black text-sm"
+    />
+
+    {/* Category */}
+    <select
+    value={category}
+    onChange={(e) => setCategory(e.target.value)}
+        className="w-full sm:w-52 h-11 px-4 bg-white border border-gray-200 rounded-lg outline-none focus:border-black text-sm"
+    >
+        <option value="">All Categories</option>
+        <option value="electronics">Electronics</option>
+        <option value="clothing">Clothing</option>
+        <option value="grocery">Grocery</option>
+        <option value="accessories">Accessories</option>
+        <option value="footwares">Footwear</option>
+    </select>
+
+</div>
+
+
+
                 <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
 
 
-                   
+
                     <div className="overflow-x-auto">
 
                         <table className="w-full min-w-[900px]">
 
 
-                            
+
                             <thead className="bg-gray-50 border-b border-gray-200">
 
                                 <tr>
@@ -148,10 +211,10 @@ const AllProductsPage = () => {
                             </thead>
 
 
-                           
+
                             <tbody className="divide-y divide-gray-100">
 
-                                {products.map((product) => (
+                                {/*products*/ searchProducts.map((product) => (
 
                                     <tr
                                         key={product._id}
@@ -173,7 +236,7 @@ const AllProductsPage = () => {
                                         </td>
 
 
-                                        
+
                                         <td className="px-4 sm:px-6 py-4 text-sm text-gray-600">
 
                                             <span className="whitespace-nowrap">
@@ -183,7 +246,7 @@ const AllProductsPage = () => {
                                         </td>
 
 
-                                        
+
                                         <td className="px-4 sm:px-6 py-4">
 
                                             <span className="inline-block px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-medium whitespace-nowrap">
@@ -193,19 +256,19 @@ const AllProductsPage = () => {
                                         </td>
 
 
-                                      
+
                                         <td className="px-4 sm:px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                                             ₹{product.price}
                                         </td>
 
 
-                                      
+
                                         <td className="px-4 sm:px-6 py-4 text-sm font-medium text-gray-900">
                                             {product.quantity}
                                         </td>
 
 
-                                     
+
                                         <td className="px-4 sm:px-6 py-4">
 
                                             {product.quantity === 0 ? (
@@ -231,13 +294,13 @@ const AllProductsPage = () => {
                                         </td>
 
 
-                                       
+
                                         <td className="px-4 sm:px-6 py-4">
 
                                             <div className="flex items-center gap-2">
 
 
-                                               
+
                                                 <button
                                                     onClick={() => addProducts(product)}
                                                     className="px-3 sm:px-4 py-2 bg-black text-white text-xs sm:text-sm rounded-lg hover:bg-gray-800 transition whitespace-nowrap"
@@ -246,7 +309,7 @@ const AllProductsPage = () => {
                                                 </button>
 
 
-                                               
+
                                                 <button
                                                     onClick={() => deleteProduct(product._id)}
                                                     className="px-3 sm:px-4 py-2 bg-red-700 text-white text-xs sm:text-sm rounded-lg hover:bg-red-800 transition whitespace-nowrap"
@@ -271,7 +334,7 @@ const AllProductsPage = () => {
                 </div>
 
 
-                
+
                 {newProducts && (
                     <AddProductModal
                         product={newProducts}

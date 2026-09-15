@@ -38,7 +38,7 @@ function AddProductModal({ product, onClose }) {
     }, [product]);
 
 
-   
+
     const handleChange = (e) => {
 
         setFormData({
@@ -49,7 +49,7 @@ function AddProductModal({ product, onClose }) {
     };
 
 
-    
+
     const handleSubmit = async (e) => {
 
         e.preventDefault();
@@ -79,7 +79,7 @@ function AddProductModal({ product, onClose }) {
             // UPDATE EXISTING PRODUCT
             if (product) {
 
-               
+
                 const response = await api.patch(
                     `/products/update-product/${product._id}`,
                     formData
@@ -94,7 +94,7 @@ function AddProductModal({ product, onClose }) {
             }
 
 
-            
+
             else {
 
                 console.log("Creating new product");
@@ -136,11 +136,11 @@ function AddProductModal({ product, onClose }) {
 
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-3 sm:px-4 py-4">
 
-           
+
             <div className="w-full max-w-2xl max-h-[95vh] overflow-y-auto bg-white rounded-xl sm:rounded-2xl shadow-xl">
 
 
-                
+
                 <div className="sticky top-0 z-10 bg-white flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200">
 
                     <div className="flex items-center gap-3 min-w-0">
@@ -181,7 +181,7 @@ function AddProductModal({ product, onClose }) {
                     </div>
 
 
-                   
+
                     <button
                         type="button"
                         onClick={() => {
@@ -210,30 +210,22 @@ function AddProductModal({ product, onClose }) {
                     className="p-4 sm:p-6"
                 >
 
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
 
 
-                      
+
                         <div>
 
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Product Name
                             </label>
 
-                            <input
-                                type="text"
-                                name="productname"
-                                value={formData.productname}
-                                onChange={handleChange}
-                                placeholder="Enter product name"
-                                className="w-full h-11 px-3 border border-gray-200 rounded-lg outline-none focus:border-black text-sm sm:text-base"
-                            />
-
+                        
                         </div>
 
 
-                       
+
                         <div>
 
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -294,7 +286,7 @@ function AddProductModal({ product, onClose }) {
                         </div>
 
 
-                        
+
                         <div>
 
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -321,7 +313,7 @@ function AddProductModal({ product, onClose }) {
                         </div>
 
 
-                     
+
                         <div>
 
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -340,7 +332,7 @@ function AddProductModal({ product, onClose }) {
                         </div>
 
 
-                       
+
                         <div>
 
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -383,7 +375,7 @@ function AddProductModal({ product, onClose }) {
                     </div>
 
 
-                   
+
                     <div className="mt-4 sm:mt-5">
 
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -415,11 +407,11 @@ function AddProductModal({ product, onClose }) {
                     </div>
 
 
-                    
+
                     <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3 mt-5 pt-4 border-t border-gray-200">
 
 
-                       
+
                         <button
                             type="button"
                             onClick={() => {
@@ -435,7 +427,7 @@ function AddProductModal({ product, onClose }) {
                         </button>
 
 
-                        
+
                         <button
                             type="submit"
                             className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-800"
