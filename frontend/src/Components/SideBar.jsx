@@ -62,7 +62,7 @@ const SideBar = () => {
 
                 {/* Categories */}
                 <button
-
+                    onClick={() => navigate("/categories")}
                     className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-gray-600 hover:bg-gray-100 mb-1">
                     <Tags size={19} />
                     <span className="text-sm font-medium">
