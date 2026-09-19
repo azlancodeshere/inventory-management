@@ -166,7 +166,7 @@ const CategoriesPage = () => {
                                 </h2>
 
                                 <p className="text-sm text-gray-500 mt-1">
-                                    1 Product
+                                    1 Product 
                                 </p>
 
                             </div>
