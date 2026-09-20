@@ -245,35 +245,8 @@ const CategoriesPage = () => {
                         <div className="space-y-3">
 
 
-                            {/* Headphones */}
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-gray-100 rounded-lg p-3">
-
-                                <div>
-
-                                    <h3 className="font-medium text-gray-800">
-                                        Headphones
-                                    </h3>
-
-                                    <p className="text-sm text-gray-500">
-                                        SKU: HEAD001
-                                    </p>
-
-                                </div>
-
-
-                                <div className="text-left sm:text-right">
-
-                                    <p className="font-semibold text-gray-800">
-                                        ₹1,500
-                                    </p>
-
-                                    <p className="text-sm text-gray-500">
-                                        Stock: 12
-                                    </p>
-
-                                </div>
-
-                            </div>
+                            
+                            
 
                         </div>
 
