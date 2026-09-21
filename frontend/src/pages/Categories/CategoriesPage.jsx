@@ -25,10 +25,16 @@ const CategoriesPage = () => {
 
 
     useEffect(() => {
-
         getAllProducts();
-
     }, []);
+
+
+    
+    const categories = [
+        ...new Set(
+            products.map((product)=> product.category)
+        )
+    ]
 
 
     return (
@@ -52,208 +58,113 @@ const CategoriesPage = () => {
                 </div>
 
 
-                {/* Categories Grid */}
+            
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
 
-                    {/* Electronics */}
-                    <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 shadow-sm">
+                    {categories.map((category) => {
 
-                        <div className="flex items-center justify-between mb-5">
-
-                            <div>
-
-                                <h2 className="text-lg font-semibold text-gray-900">
-                                    Electronics
-                                </h2>
-
-                                <p className="text-sm text-gray-500 mt-1">
-                                    2 Products
-                                </p>
-
-                            </div>
+                       
+                        const categoryProducts = products.filter(// products mai see wahi chij niklo jinki category current category ke equal hai
+                            (product) =>
+                                product.category === category
+                        );
 
 
-                            <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                📦
-                            </div>
+                        return (
 
-                        </div>
-
-
-                        {/* Products */}
-                        <div className="space-y-3">
+                            <div
+                                key={category}
+                                className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 shadow-sm"
+                            >
 
 
-                            {/* Laptop */}
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-gray-100 rounded-lg p-3">
+                                
+                                <div className="flex items-center justify-between mb-5">
 
-                                <div>
+                                    <div>
 
-                                    <h3 className="font-medium text-gray-800">
-                                        Laptop
-                                    </h3>
+                                        <h2 className="text-lg font-semibold text-gray-900 capitalize">
+                                            {category}
+                                        </h2>
 
-                                    <p className="text-sm text-gray-500">
-                                        SKU: LAP001
-                                    </p>
+                                        <p className="text-sm text-gray-500 mt-1">
 
-                                </div>
+                                            {categoryProducts.length}{" "}
 
+                                            {categoryProducts.length === 1
+                                                ? "Product"
+                                                : "Products"
+                                            }
 
-                                <div className="text-left sm:text-right">
+                                        </p>
 
-                                    <p className="font-semibold text-gray-800">
-                                        ₹50,000
-                                    </p>
-
-                                    <p className="text-sm text-gray-500">
-                                        Stock: 10
-                                    </p>
-
-                                </div>
-
-                            </div>
+                                    </div>
 
 
-                            {/* Mouse */}
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-gray-100 rounded-lg p-3">
-
-                                <div>
-
-                                    <h3 className="font-medium text-gray-800">
-                                        Mouse
-                                    </h3>
-
-                                    <p className="text-sm text-gray-500">
-                                        SKU: MOU001
-                                    </p>
+                                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                        📦
+                                    </div>
 
                                 </div>
 
 
-                                <div className="text-left sm:text-right">
-
-                                    <p className="font-semibold text-gray-800">
-                                        ₹800
-                                    </p>
-
-                                    <p className="text-sm text-gray-500">
-                                        Stock: 5
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                               
+                                <div className="space-y-3">
 
 
-                    {/* Clothing */}
-                   
+                                    {categoryProducts.map((product) => (
 
-                    {/* Grocery */}
-                    <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 shadow-sm">
-
-                        <div className="flex items-center justify-between mb-5">
-
-                            <div>
-
-                                <h2 className="text-lg font-semibold text-gray-900">
-                                    Grocery
-                                </h2>
-
-                                <p className="text-sm text-gray-500 mt-1">
-                                    1 Product 
-                                </p>
-
-                            </div>
+                                        <div
+                                            key={product._id}
+                                            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-gray-100 rounded-lg p-3"
+                                        >
 
 
-                            <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                🛒
-                            </div>
+                                         
+                                            <div>
 
-                        </div>
+                                                <h3 className="font-medium text-gray-800">
+                                                    {product.productname}
+                                                </h3>
 
+                                                <p className="text-sm text-gray-500">
+                                                    SKU: {product.sku}
+                                                </p>
 
-                        <div className="space-y-3">
-
-
-                            {/* Rice */}
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-gray-100 rounded-lg p-3">
-
-                                <div>
-
-                                    <h3 className="font-medium text-gray-800">
-                                        Rice
-                                    </h3>
-
-                                    <p className="text-sm text-gray-500">
-                                        SKU: RIC001
-                                    </p>
-
-                                </div>
+                                            </div>
 
 
-                                <div className="text-left sm:text-right">
+                                            {/* Price & Stock */}
+                                            <div className="text-left sm:text-right">
 
-                                    <p className="font-semibold text-gray-800">
-                                        ₹900
-                                    </p>
+                                                <p className="font-semibold text-gray-800">
+                                                    ₹{product.price}
+                                                </p>
 
-                                    <p className="text-sm text-gray-500">
-                                        Stock: 30
-                                    </p>
+                                                <p className="text-sm text-gray-500">
+                                                    Stock: {product.quantity}
+                                                </p>
+
+                                            </div>
+
+
+                                        </div>
+
+                                    ))}
+
 
                                 </div>
 
                             </div>
 
-                        </div>
+                        );
 
-                    </div>
-
-
-                    {/* Accessories */}
-                    <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 shadow-sm">
-
-                        <div className="flex items-center justify-between mb-5">
-
-                            <div>
-
-                                <h2 className="text-lg font-semibold text-gray-900">
-                                    Accessories
-                                </h2>
-
-                                <p className="text-sm text-gray-500 mt-1">
-                                    1 Product
-                                </p>
-
-                            </div>
-
-
-                            <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                🎧
-                            </div>
-
-                        </div>
-
-
-                        <div className="space-y-3">
-
-
-                            
-                            
-
-                        </div>
-
-                    </div>
+                    })}
 
 
                 </div>
+
 
             </div>
 

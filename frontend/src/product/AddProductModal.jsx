@@ -221,7 +221,18 @@ function AddProductModal({ product, onClose }) {
                                 Product Name
                             </label>
 
-                        
+
+                            <input
+                                type="text"
+                                name="productname"
+                                value={formData.productname}
+                                onChange={handleChange}
+                                placeholder="Enter product name"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-3 
+               focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            />
+
+
                         </div>
 
 
