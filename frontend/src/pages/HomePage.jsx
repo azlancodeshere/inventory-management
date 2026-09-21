@@ -167,7 +167,7 @@ function HomePage() {
 
 
                             {/* Activity  */}
-                          <Activity/>
+                          <Activity products={products}/>
 
                         </div>
 
