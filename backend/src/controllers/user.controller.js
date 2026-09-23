@@ -268,69 +268,15 @@ const logoutUser = async (req, res) => {
         )
     }
 
-}
-
-const changeCurrentPassword = async (req, res) => {
-    try {
-
-        const { oldPassword, newPassword } = req.body;
-        if (!oldPassword || !newPassword) {
-            throw new ApiError(
-                400,
-                "oldpassword and new password are required"
-            )
-
-        }
-
-        const currentUser = await User.findById(req.user._id);
-        if (!currentUser) {
-            throw new ApiError(
-                404,
-                "user not found"
-            )
-
-        }
-
-        const isPasswordcorrect = await currentUser.isPasswordCorrect(oldPassword);
-        if (!isPasswordcorrect) {
-
-            throw new ApiError(
-                401,
-                "old password is incorrect"
-            )
-        }
-
-        currentUser.password = newPassword
-        await currentUser.save()
+} 
 
 
-        return res.status(200).json(
-            new ApiResponse(
-                200,
-                "password changed successfully",
-
-
-            )
-        )
-
-    } catch (error) {
-
-        return res.status(
-            error.statusCode || 500
-        ).json(
-            new ApiError(
-                error.statusCode || 500,
-                error.message || "Something went wrong"
-            )
-        )
-    }
-}
 
 const updateAccount = async (req, res) => {
     try {
-        const { username, fullname, email } = req.body
+        const { username, fullname, email, phoneNumber } = req.body
 
-        if (!username && !fullname && !email) {
+        if (!username && !fullname && !email && !phoneNumber) {
             throw new ApiError(
                 400,
                 "At least one filed is required"
@@ -344,7 +290,9 @@ const updateAccount = async (req, res) => {
                 $set: {
                     username,
                     email,
-                    fullname
+                    fullname,
+                    phoneNumber
+
                 }
             },
             {
@@ -382,6 +330,70 @@ const updateAccount = async (req, res) => {
         )
     }
 }
+
+const changePassword = async (req,res) =>{
+
+    try {
+        
+        const {currentPassword, newPassword} = req.body;
+
+        if(!currentPassword || !newPassword){
+            throw new ApiError(
+                400,
+                "Current password and new password are required"
+            );
+        }
+
+        // current user logged-in user find out
+        const user = await User.findById(req.user._id);
+
+        if (!user){
+            throw new ApiError(
+                404,
+                "User not found"
+            )
+        }
+       
+        // Current password verify karo
+        const isPasswordCorrect = await user.isPasswordCorrect(currentPassword);
+        if(!isPasswordCorrect){
+            throw new ApiError(
+                401,
+                "Current passowrd is inCorrect"
+            )
+        }
+      
+
+        // new password set
+        user.password = newPassword;
+
+
+        // save 
+        await user.save();
+
+         return res.status(200).json(
+            new ApiResponse(
+                200,
+                "Password changed successfully"
+            )
+        );
+
+
+    } catch (error) {
+
+         return res.status(
+            error.statusCode || 500
+        ).json(
+            new ApiError(
+                error.statusCode || 500,
+                error.message || "Something went wrong"
+            )
+        );
+        
+    }
+
+}
+
 
 const getCurrentUser = async (req, res) => {
 
@@ -448,4 +460,4 @@ const getAllUsers = async (req, res) => {
 
 
 
-export { registerUser, loginUser, logoutUser, changeCurrentPassword, updateAccount, getCurrentUser, getAllUsers, refreshAccessToken }
+export { registerUser, loginUser, logoutUser, updateAccount, getCurrentUser, getAllUsers, refreshAccessToken, changePassword }

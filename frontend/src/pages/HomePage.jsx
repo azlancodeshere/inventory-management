@@ -1,17 +1,5 @@
 import {
-    LayoutDashboard,
-    Package,
-    Tags,
-    BarChart3,
-    Settings,
-    LogOut,
-    Search,
-    Bell,
     Plus,
-    TrendingUp,
-    TrendingDown,
-    AlertTriangle,
-    Boxes,
 } from "lucide-react";
 
 import HomeNavbar from "./Home/HomeNavbar";
@@ -20,86 +8,136 @@ import Cards from "./cards/Cards";
 import Activity from "./Activity/Activity";
 import { AuthContext } from "../context/AuthContext";
 import { useContext, useEffect, useState } from "react";
-import {Link, useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 
 function HomePage() {
 
-    const {user, isAuthenticated} = useContext(AuthContext)
-    const navigate = useNavigate()
-    const [products, setProducts] = useState([])
+    const { user, isAuthenticated } = useContext(AuthContext);
+    const navigate = useNavigate();
 
+    const [products, setProducts] = useState([]);
+    const [sortType, setSortType] = useState("all")
 
-    useEffect (()=>{
-        const getProducts = async () =>{
+    useEffect(() => {
+
+        const getProducts = async () => {
+
             try {
+
                 const response = await api.get("/products/all-products");
+
                 setProducts(response.data.data);
 
-                
             } catch (error) {
-                console.log("Error in getting products:", error)
-                
+
+                console.log("Error in getting products:", error);
+
             }
-        }
+
+        };
 
         getProducts();
 
-    }, [])
+    }, []);
+
+
+  
+   
+
+
+    const chartProducts = [...products];
+    
+    if(sortType === "highest"){
+        chartProducts.sort( // larger to smaller
+            (a,b)=> Number(b.quantity) - Number(a.quantity)
+        )
+    }
+
+    if(sortType === "lowest"){
+        chartProducts.sort( // sort() array ke items ko order mein arrange karta hai. samaller to larger
+            (a,b) => Number(a.quantity) - Number(b.quantity)
+        )
+    }
+
+     const maxStock = Math.max(
+        ...chartProducts.map((product) => Number(product.quantity) || 0),
+        1
+    );
+
     return (
         <div className="min-h-screen bg-gray-100">
 
-            {/* ================= NAVBAR ================= */}
-            <HomeNavbar/>
+        
+            <HomeNavbar />
 
 
-            {/* ================= MAIN AREA ================= */}
+           
             <div className="flex">
 
-                {/* ================= SIDEBAR ================= */}
-               <SideBar/>
+             
+                <SideBar />
 
 
-                {/* ================= DASHBOARD CONTENT ================= */}
+              
                 <main className="flex-1 p-6">
 
-                    {/* Header */}
+
+                  
+
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-7">
 
                         <div>
+
                             <h2 className="text-2xl font-bold text-gray-900">
                                 Dashboard
                             </h2>
 
                             <p className="text-sm text-gray-500 mt-1">
-                                Welcome back,{isAuthenticated && user?.username}  👋
+                                Welcome back,{" "}
+                                {isAuthenticated && user?.username} 👋
                             </p>
+
                         </div>
 
+
                         <button
-                        onClick={() =>navigate("/create-product")}
-                        
-                        className="flex items-center justify-center gap-2 bg-black text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800">
+                            onClick={() => navigate("/create-product")}
+                            className="flex items-center justify-center gap-2 bg-black text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800"
+                        >
+
                             <Plus size={18} />
+
                             Add Product
+
                         </button>
 
                     </div>
-  
-
-                    {/* ================= STAT CARDS ================= */}
-                  <Cards products={products}/>
 
 
-                    {/* ================= LOWER SECTION ================= */}
+
+                  
+
+                    <Cards products={products} />
+
+
+
+                   
+
                     <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
 
-                        {/* Stock Overview */}
+
+                       
+
                         <div className="xl:col-span-2 bg-white border border-gray-200 rounded-xl p-5">
+
+
+                            {/* Chart Header */}
 
                             <div className="flex items-center justify-between mb-6">
 
                                 <div>
+
                                     <h3 className="font-semibold text-gray-900">
                                         Stock Overview
                                     </h3>
@@ -107,51 +145,121 @@ function HomePage() {
                                     <p className="text-sm text-gray-500 mt-1">
                                         Inventory status overview
                                     </p>
+
                                 </div>
 
-                                <select className="border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none">
-                                    <option>Last 7 days</option>
-                                    <option>Last 30 days</option>
-                                    <option>Last 6 months</option>
+
+                                <select
+                                value={sortType}
+                                onChange={(e) => setSortType(e.target.value)}
+
+                                className="border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none">
+
+                                    <option value="all">
+                                        All Products
+                                    </option>
+
+                                    <option value="highest">
+                                        Highest Stock
+                                    </option>
+
+                                    <option value="lowest">
+                                        Lowest Stock
+                                    </option>
+
                                 </select>
 
                             </div>
 
 
-                            {/* Fake Chart */}
-                            <div className="h-64 flex items-end gap-5 px-5 border-b border-gray-100">
 
-                                <div className="w-full h-[35%] bg-gray-200 rounded-t-md"></div>
+                          
 
-                                <div className="w-full h-[55%] bg-gray-300 rounded-t-md"></div>
+                            {chartProducts.length > 0 ? (
 
-                                <div className="w-full h-[45%] bg-gray-200 rounded-t-md"></div>
+                                <>
 
-                                <div className="w-full h-[70%] bg-gray-300 rounded-t-md"></div>
+                                    <div className="h-64 flex items-end gap-5 px-5 border-b border-gray-100">
 
-                                <div className="w-full h-[60%] bg-gray-200 rounded-t-md"></div>
+                                        {chartProducts.map((product) => {
 
-                                <div className="w-full h-[80%] bg-gray-300 rounded-t-md"></div>
+                                            const quantity =
+                                                Number(product.quantity) || 0;
 
-                                <div className="w-full h-[65%] bg-gray-200 rounded-t-md"></div>
+                                            const height =
+                                                (quantity / maxStock) * 100;
 
-                            </div>
 
-                            <div className="flex justify-between text-xs text-gray-400 mt-3 px-4">
-                                <span>Mon</span>
-                                <span>Tue</span>
-                                <span>Wed</span>
-                                <span>Thu</span>
-                                <span>Fri</span>
-                                <span>Sat</span>
-                                <span>Sun</span>
-                            </div>
+                                            return (
+
+                                                <div
+                                                    key={product._id}
+                                                    className="flex-1 flex items-end h-full min-w-0"
+                                                >
+
+                                                    <div
+                                                        className="w-full bg-red-300 hover:bg-green-400 rounded-t-md transition-all duration-200 cursor-pointer"
+                                                        style={{
+                                                            height: `${height}%`,
+                                                            minHeight:
+                                                                quantity > 0
+                                                                    ? "8px"
+                                                                    : "0px"
+                                                        }}
+                                                        title={`${product.productname} - ${quantity} in stock`}
+                                                    >
+                                                    </div>
+
+                                                </div>
+
+                                            );
+
+                                        })}
+
+                                    </div>
+
+
+
+                                  
+
+                                    <div className="flex gap-5 text-xs text-gray-400 mt-3 px-5">
+
+                                        {chartProducts.map((product) => (
+
+                                            <div
+                                                key={product._id}
+                                                className="flex-1 text-center truncate"
+                                                title={product.productname}
+                                            >
+
+                                                {product.productname}
+
+                                            </div>
+
+                                        ))}
+
+                                    </div>
+
+                                </>
+
+                            ) : (
+
+                                <div className="h-64 flex items-center justify-center text-sm text-gray-400">
+
+                                    No products available
+
+                                </div>
+
+                            )}
 
                         </div>
 
 
-                        {/* Recent Activity */}
+
+                        {/* ================= RECENT ACTI VITY ================= */}
+
                         <div className="bg-white border border-gray-200 rounded-xl p-5">
+
 
                             <div className="flex items-center justify-between mb-5">
 
@@ -159,17 +267,23 @@ function HomePage() {
                                     Recent Activity
                                 </h3>
 
+
                                 <button className="text-sm text-gray-500 hover:text-black">
+
                                     View all
+
                                 </button>
 
                             </div>
 
 
-                            {/* Activity  */}
-                          <Activity products={products}/>
+
+                            {/* Activity */}
+
+                            <Activity products={products} />
 
                         </div>
+
 
                     </div>
 

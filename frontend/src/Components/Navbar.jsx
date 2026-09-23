@@ -17,6 +17,8 @@ import { useNavigate, Link } from 'react-router-dom';
 
 export const Navbar = () => {
     const navigate= useNavigate()
+
+    
   return (
     <nav className="h-[72px] bg-white border-b border-slate-200">
                 <div className="h-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between">

@@ -2,7 +2,9 @@ import {Router} from "express"
 import { registerUser,
     loginUser,
    logoutUser,
-    getCurrentUser
+    getCurrentUser,
+    updateAccount,
+    changePassword
  } from "../controllers/user.controller.js"
 import { verifyJWT } from "../middleware/Auth.middleware.js"
 
@@ -14,6 +16,7 @@ router.route("/logout").post(verifyJWT,logoutUser)
 router.route("/current-user").get(
     verifyJWT,
     getCurrentUser)
-
+router.route("/update-account").patch(verifyJWT, updateAccount)
+router.route("/change-password").patch(verifyJWT,changePassword)
     
 export default router
