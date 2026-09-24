@@ -78,11 +78,11 @@ function HomePage() {
             <div className="flex">
 
              
-                <SideBar />
+                <SideBar  />
 
 
               
-                <main className="flex-1 p-6">
+              <main className="flex-1 min-w-0 p-4 pt-20 md:p-6 md:pt-6">
 
 
                   
@@ -132,8 +132,6 @@ function HomePage() {
 
                         <div className="xl:col-span-2 bg-white border border-gray-200 rounded-xl p-5">
 
-
-                            {/* Chart Header */}
 
                             <div className="flex items-center justify-between mb-6">
 
@@ -257,8 +255,7 @@ function HomePage() {
 
 
 
-                        {/* ================= RECENT ACTI VITY ================= */}
-
+                     
                         <div className="bg-white border border-gray-200 rounded-xl p-5">
 
 
