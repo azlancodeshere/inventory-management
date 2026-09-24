@@ -318,12 +318,13 @@ function RegisterPage() {
 
                                             Already have an account?
 
-                                            <a
-                                                href="#"
+                                            <Link
+                                                
+                                                to="/login"
                                                 className="ml-1 font-semibold text-blue-600 transition hover:text-blue-700"
                                             >
                                                 Login here
-                                            </a>
+                                            </Link>
 
                                         </p>
 

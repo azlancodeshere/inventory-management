@@ -196,12 +196,12 @@ function LoginPage() {
 
                                             Don't have an account?
 
-                                            <a
-                                                href="#"
+                                            <Link
+                                                to="/register"
                                                 className="ml-1 font-semibold text-blue-600 transition hover:text-blue-700"
                                             >
                                                 Create Account
-                                            </a>
+                                            </Link>
 
                                         </p>
 

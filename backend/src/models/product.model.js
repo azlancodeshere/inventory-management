@@ -5,7 +5,7 @@ const productSchema = new mongoose.Schema({
    productname:{
     type:String,
     required:true,
-    unique:true,
+   
    },
 
    description:{
@@ -34,7 +34,7 @@ const productSchema = new mongoose.Schema({
    sku:{ //Unique product code
     type:String,
     required:true,
-    unique:true,
+   
     trim:true,
     uppercase:true,
    },
@@ -43,7 +43,16 @@ const productSchema = new mongoose.Schema({
     type:Number,
     default:10,
     min:0,
-   }
+   },
+
+
+   
+
+   user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    }
 
 
 }, {timestamps: true})
