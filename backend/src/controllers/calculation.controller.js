@@ -10,7 +10,7 @@ const calculateProduct = async (req, res) => {
         } = req.body;
 
 
-        // Validation
+        
         if (
             typeof oldTotalProduct !== "number" ||
             typeof newTotalProduct !== "number" ||
@@ -19,17 +19,17 @@ const calculateProduct = async (req, res) => {
         ) {
             throw new ApiError(
                 400,
-                "Please provide valid total product values"
+                "Please provide valid total Product values"
             );
         }
 
 
-        // Difference
+        
         const increase =
             newTotalProduct - oldTotalProduct;
 
 
-        // Percentage
+       
         const percentage =
             (increase / oldTotalProduct) * 100;
 
@@ -63,6 +63,63 @@ const calculateProduct = async (req, res) => {
 };
 
 
+
+
+const calculateStock = async (req, res) =>{
+    try {
+
+        const {oldTotalStock, newTotalStock} = req.body;
+
+        if(
+            typeof oldTotalStock !== "number" ||
+            typeof newTotalStock !== "number" ||
+             
+            oldTotalStock <= 0 ||
+            newTotalStock <0
+
+        ){
+    
+        throw new ApiError(
+                400,
+                "Please provide valid total Stock values"
+            );
+        }
+
+
+        const increase  = newTotalStock - oldTotalStock;
+
+        const percentage = (increase/oldTotalStock) * 100
+
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                "Stock percentage calculated successfully",
+                {
+                    oldTotalStock,
+                    newTotalStock,
+                    percentage: Number(
+                        percentage.toFixed(2)
+                    )
+                }
+            )
+        );
+        
+    } catch (error) {
+
+         return res.status(
+            error.statusCode || 500
+        ).json(
+            new ApiError(
+                error.statusCode || 500,
+                error.message || "Something went wrong"
+            )
+        );
+        
+    }
+}
+
+
 export {
-    calculateProduct
+    calculateProduct,
+    calculateStock
 };
