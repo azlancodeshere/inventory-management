@@ -1,7 +1,7 @@
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 
-const calculateProduct = async (req, res) => {
+const calculateTotalProduct = async (req, res) => {
     try {
 
         const {
@@ -65,7 +65,7 @@ const calculateProduct = async (req, res) => {
 
 
 
-const calculateStock = async (req, res) =>{
+const calculateTotalStock = async (req, res) =>{
     try {
 
         const {oldTotalStock, newTotalStock} = req.body;
@@ -120,6 +120,6 @@ const calculateStock = async (req, res) =>{
 
 
 export {
-    calculateProduct,
-    calculateStock
+    calculateTotalProduct,
+    calculateTotalStock
 };
