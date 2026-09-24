@@ -7,6 +7,7 @@ import AddProductModal from "./product/AddProductModal.jsx";
 import AllProductsPage from "./product/AllProductsPage.jsx";
 import CategoriesPage from "./pages/Categories/CategoriesPage.jsx";
 import SettingPage from "./pages/Settings/SettingPage.jsx";
+import Report from "./pages/Reports/Report.jsx";
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
       <Route path="/all-products" element={<AllProductsPage/>}/>
       <Route path="categories" element={<CategoriesPage/>}/>
       <Route path="/settings" element={<SettingPage/>}/>
+      <Route path="/reports" element={<Report/>}/>
+
     </Routes>
   );
 }

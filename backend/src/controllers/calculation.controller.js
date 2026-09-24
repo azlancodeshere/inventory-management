@@ -1,37 +1,63 @@
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
+import { Product } from "../models/product.model.js";
 
+
+// Calculate Product percentage
 const calculateTotalProduct = async (req, res) => {
     try {
 
-        const {
-            oldTotalProduct,
-            newTotalProduct
-        } = req.body;
+        const userId = req.user._id;
+
+        const now = new Date();
+
+        // Current month start
+        const currentMonthStart = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            1
+        );
+
+        // Previous month start
+        const previousMonthStart = new Date(
+            now.getFullYear(),
+            now.getMonth() - 1,
+            1
+        );
 
 
-        
-        if (
-            typeof oldTotalProduct !== "number" ||
-            typeof newTotalProduct !== "number" ||
-            oldTotalProduct <= 0 ||
-            newTotalProduct < 0
-        ) {
-            throw new ApiError(
-                400,
-                "Please provide valid total Product values"
-            );
+        // Products created before current month
+        const oldTotalProduct = await Product.countDocuments({
+            user: userId,
+            createdAt: {
+                $lt: currentMonthStart
+            }
+        });
+
+
+        // Products created before next month
+        const newTotalProduct = await Product.countDocuments({
+            user: userId,
+            createdAt: {
+                $lt: new Date(
+                    now.getFullYear(),
+                    now.getMonth() + 1,
+                    1
+                )
+            }
+        });
+
+
+        let percentage = 0;
+
+        if (oldTotalProduct > 0) {
+
+            const difference =
+                newTotalProduct - oldTotalProduct;
+
+            percentage =
+                (difference / oldTotalProduct) * 100;
         }
-
-
-        
-        const increase =
-            newTotalProduct - oldTotalProduct;
-
-
-       
-        const percentage =
-            (increase / oldTotalProduct) * 100;
 
 
         return res.status(200).json(
@@ -48,7 +74,6 @@ const calculateTotalProduct = async (req, res) => {
             )
         );
 
-
     } catch (error) {
 
         return res.status(
@@ -64,31 +89,61 @@ const calculateTotalProduct = async (req, res) => {
 
 
 
-
-const calculateTotalStock = async (req, res) =>{
+// Calculate Stock percentage
+const calculateTotalStock = async (req, res) => {
     try {
 
-        const {oldTotalStock, newTotalStock} = req.body;
+        const userId = req.user._id;
 
-        if(
-            typeof oldTotalStock !== "number" ||
-            typeof newTotalStock !== "number" ||
-             
-            oldTotalStock <= 0 ||
-            newTotalStock <0
+        const now = new Date();
 
-        ){
-    
-        throw new ApiError(
-                400,
-                "Please provide valid total Stock values"
-            );
+        const currentMonthStart = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            1
+        );
+
+
+        // Previous month's total stock
+        const previousProducts = await Product.find({
+            user: userId,
+            createdAt: {
+                $lt: currentMonthStart
+            }
+        });
+
+
+        const oldTotalStock = previousProducts.reduce(
+            (total, product) =>
+                total + Number(product.quantity || 0),
+            0
+        );
+
+
+        // Current total stock
+        const currentProducts = await Product.find({
+            user: userId
+        });
+
+
+        const newTotalStock = currentProducts.reduce(
+            (total, product) =>
+                total + Number(product.quantity || 0),
+            0
+        );
+
+
+        let percentage = 0;
+
+        if (oldTotalStock > 0) {
+
+            const difference =
+                newTotalStock - oldTotalStock;
+
+            percentage =
+                (difference / oldTotalStock) * 100;
         }
 
-
-        const increase  = newTotalStock - oldTotalStock;
-
-        const percentage = (increase/oldTotalStock) * 100
 
         return res.status(200).json(
             new ApiResponse(
@@ -103,10 +158,10 @@ const calculateTotalStock = async (req, res) =>{
                 }
             )
         );
-        
+
     } catch (error) {
 
-         return res.status(
+        return res.status(
             error.statusCode || 500
         ).json(
             new ApiError(
@@ -114,9 +169,8 @@ const calculateTotalStock = async (req, res) =>{
                 error.message || "Something went wrong"
             )
         );
-        
     }
-}
+};
 
 
 export {
