@@ -1,37 +1,68 @@
-import { Calculation } from "../models/productCalculation.model";
+import { ApiError } from "../../utils/ApiError.js";
+import { ApiResponse } from "../../utils/ApiResponse.js";
 
-import { ApiError } from "../../utils/ApiError";
-
-import { ApiResponse } from "../../utils/ApiResponse";
-
-
-const calcluteProduct = async (req, res) =>{
-
+const calculateProduct = async (req, res) => {
     try {
 
-        const {oldTotalProdct, newTotalProdct} = req.body;
+        const {
+            oldTotalProduct,
+            newTotalProduct
+        } = req.body;
 
-        if( typeof oldTotalProdct !== "number" || 
-            typeof newTotalProdct !== "number" ||
 
-            oldTotalProdct <=0 ||
-            newTotalProdct <0 
-        ){
-            throw new ApiError (
+        // Validation
+        if (
+            typeof oldTotalProduct !== "number" ||
+            typeof newTotalProduct !== "number" ||
+            oldTotalProduct <= 0 ||
+            newTotalProduct < 0
+        ) {
+            throw new ApiError(
                 400,
-                "Please provide a valid TotalPrdoductt"
-            )
-            
+                "Please provide valid total product values"
+            );
         }
 
-        const increase = newTotalProdct - oldTotalProdct;
 
-        const precantage = (increase/ oldTotalProdct) * 100
+        // Difference
+        const increase =
+            newTotalProduct - oldTotalProduct;
 
-        
-        
+
+        // Percentage
+        const percentage =
+            (increase / oldTotalProduct) * 100;
+
+
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                "Product percentage calculated successfully",
+                {
+                    oldTotalProduct,
+                    newTotalProduct,
+                    percentage: Number(
+                        percentage.toFixed(2)
+                    )
+                }
+            )
+        );
+
+
     } catch (error) {
-        
-    }
 
-}
+        return res.status(
+            error.statusCode || 500
+        ).json(
+            new ApiError(
+                error.statusCode || 500,
+                error.message || "Something went wrong"
+            )
+        );
+    }
+};
+
+
+export {
+    calculateProduct
+};
