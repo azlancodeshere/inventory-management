@@ -217,7 +217,12 @@ const loginUser = async (req, res) => {
             .json(
                 new ApiResponse(200,
                     "User logged in successfully",
-                    loggedInUser));
+                    {user:loggedInUser,
+
+                        accessToken
+                    }
+
+                ));
     } catch (error) {
 
         console.log("login error:", error)

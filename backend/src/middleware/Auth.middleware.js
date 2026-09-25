@@ -46,6 +46,7 @@ export const verifyJWT = async (req, res, next) => {
         next()
 
     } catch (error) {
+         console.log("JWT ERROR:", error);
 
         return res
             .status(error.statusCode || 401)
