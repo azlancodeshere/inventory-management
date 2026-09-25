@@ -72,11 +72,13 @@ const Cards = ({ products }) => {
 
 
 
-    const lowStock = products.filter(
-        product =>
-            product.quantity > 0 &&
-            product.quantity <= product.lowStockThreshold
-    ).length;
+    const lowStock = products.filter((product) => {
+    const quantity = Number(product.quantity) || 0;
+    const threshold = Number(product.lowStockThreshold);
+
+    return quantity > 0 && quantity <= threshold;
+}).length;
+
 
 
 

@@ -56,11 +56,7 @@ const HomeNavbar = () => {
             {/* Right Side */}
             <div className="flex items-center gap-5">
 
-                <button className="relative">
-                    <Bell size={21} className="text-gray-600" />
-
-                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
+              
 
                 <div className="flex items-center gap-3">
 
