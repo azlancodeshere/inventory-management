@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Register from "./pages/RegisterPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
@@ -12,6 +12,7 @@ import Report from "./pages/Reports/Report.jsx";
 function App() {
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/register" element={<Register />} />
       <Route path="/home" element={<HomePage/>}/>
       <Route path="/login" element={<LoginPage/>}/>
