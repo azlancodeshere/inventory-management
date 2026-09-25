@@ -71,10 +71,11 @@ const refreshAccessToken = async (req, res) => {
         const { accessToken, refreshToken } =
             await generateAccessAndRefreshTokens(user._id)
 
-        const options = {
-            httpOnly: true,
-            secure: false
-        }
+       const options = {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+};
 
         return res
             .status(200)
@@ -203,7 +204,8 @@ const loginUser = async (req, res) => {
 
         const options = {
             httpOnly: true,
-            secure: false,
+            secure: true,
+             sameSite: "none",
             
         }
 
@@ -241,10 +243,10 @@ const logoutUser = async (req, res) => {
         })
 
         const options = {
-            httpOnly: true,
-            secure: false,
-            
-        };
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+};
 
         return res
             .status(200)
