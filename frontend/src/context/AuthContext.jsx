@@ -28,8 +28,13 @@ const getCurrentUser = async () =>{
         setIsAuthenticated(true);
 
     } catch (error) {
+        setUser(null);
         setIsAuthenticated(false);
         console.log("Backend error:", error)
+
+         if (error.response?.status !== 401) {
+            console.log("Backend error:", error);
+        }
         
     }
 
