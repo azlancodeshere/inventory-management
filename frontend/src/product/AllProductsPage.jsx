@@ -4,19 +4,39 @@ import { useState, useEffect } from "react";
 import AddProductModal from "./AddProductModal.jsx";
 import Skeleton from "react-loading-skeleton";
 
-const AllProductsPage = () => {
+const StockBadge = ({ quantity, lowStockThreshold }) => {
+    if (quantity === 0) {
+        return (
+            <span className="inline-block px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium whitespace-nowrap">
+                Out of Stock
+            </span>
+        );
+    }
 
+    if (quantity <= lowStockThreshold) {
+        return (
+            <span className="inline-block px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-medium whitespace-nowrap">
+                Low Stock
+            </span>
+        );
+    }
+
+    return (
+        <span className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium whitespace-nowrap">
+            In Stock
+        </span>
+    );
+};
+
+const AllProductsPage = () => {
     const [products, setProducts] = useState([]);
     const [newProducts, setNewProducts] = useState(null);
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("");
     const [loading, setLoading] = useState(true);
 
-
     const getProducts = async () => {
-
         try {
-
             setLoading(true);
 
             const response = await api.get("/products/all-products");
@@ -24,91 +44,53 @@ const AllProductsPage = () => {
             console.log(response.data);
 
             setProducts(response.data.data);
-
         } catch (error) {
-
             console.log("Error in getting all products:", error);
-
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
-
     useEffect(() => {
-
         getProducts();
-
     }, []);
-
 
     const addProducts = (product) => {
         setNewProducts(product);
     };
 
-
     const deleteProduct = async (id) => {
-
         try {
-
             const response = await api.delete(
                 `/products/delete-product/${id}`
             );
 
             console.log(response.data);
 
-            setProducts(
-                products.filter((product) => product._id !== id)
-            );
-
+            setProducts(products.filter((product) => product._id !== id));
         } catch (error) {
-
             console.log("Delete error:", error);
             console.log("Server error:", error.response?.data);
-
         }
-
     };
 
-
     const searchProducts = products.filter((product) => {
-
         const matchSearch =
             product.productname
                 .toLowerCase()
                 .includes(search.toLowerCase()) ||
+            product.sku.toLowerCase().includes(search.toLowerCase());
 
-            product.sku
-                .toLowerCase()
-                .includes(search.toLowerCase());
-
-
-        const matchCategory =
-            category === "" ||
-            product.category === category;
-
+        const matchCategory = category === "" || product.category === category;
 
         return matchSearch && matchCategory;
-
     });
 
-
     return (
-
         <div className="min-h-screen bg-gray-100 p-3 sm:p-4 md:p-6">
-
             <div className="max-w-7xl mx-auto">
-
-
-               
-
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-5 sm:mb-6">
-
                     <div>
-
                         <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
                             All Products
                         </h1>
@@ -116,374 +98,183 @@ const AllProductsPage = () => {
                         <p className="text-xs sm:text-sm text-gray-500 mt-1">
                             Manage your inventory products
                         </p>
-
                     </div>
 
-
                     <div className="text-xs sm:text-sm text-gray-500">
-
                         Total Products:{" "}
-
                         <span className="font-semibold text-gray-800">
-
                             {loading ? (
                                 <Skeleton width={35} />
                             ) : (
                                 products.length
                             )}
-
                         </span>
-
                     </div>
-
 
                     <div className="text-xs sm:text-sm text-gray-500">
-
                         Total Stock:{" "}
-
                         <span className="font-semibold text-gray-800">
-
                             {loading ? (
-
                                 <Skeleton width={45} />
-
                             ) : (
-
                                 products.reduce(
                                     (total, product) =>
-                                        total +
-                                        (Number(product.quantity) || 0),
+                                        total + (Number(product.quantity) || 0),
                                     0
                                 )
-
                             )}
-
                         </span>
-
                     </div>
-
                 </div>
 
-
-              
-
                 <div className="mb-5 flex flex-col sm:flex-row gap-3">
-
-                  
-
                     <input
                         type="text"
                         value={search}
-                        onChange={(e) =>
-                            setSearch(e.target.value)
-                        }
+                        onChange={(e) => setSearch(e.target.value)}
                         placeholder="Search products..."
                         className="w-full sm:max-w-md h-11 px-4 bg-white border border-gray-200 rounded-lg outline-none focus:border-black text-sm"
                     />
 
-
-                  
-
                     <select
                         value={category}
-                        onChange={(e) =>
-                            setCategory(e.target.value)
-                        }
+                        onChange={(e) => setCategory(e.target.value)}
                         className="w-full sm:w-52 h-11 px-4 bg-white border border-gray-200 rounded-lg outline-none focus:border-black text-sm"
                     >
-
-                        <option value="">
-                            All Categories
-                        </option>
-
-                        <option value="electronics">
-                            Electronics
-                        </option>
-
-                        <option value="clothing">
-                            Clothing
-                        </option>
-
-                        <option value="grocery">
-                            Grocery
-                        </option>
-
-                        <option value="accessories">
-                            Accessories
-                        </option>
-
-                        <option value="footwares">
-                            Footwear
-                        </option>
-
+                        <option value="">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="grocery">Grocery</option>
+                        <option value="accessories">Accessories</option>
+                        <option value="footwares">Footwear</option>
                     </select>
-
                 </div>
 
-
-               
-
                 <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-
-                    <div className="overflow-x-auto">
-
+                    {/* Desktop / tablet table */}
+                    <div className="hidden md:block overflow-x-auto">
                         <table className="w-full min-w-[900px]">
-
-
-                            
-
                             <thead className="bg-gray-50 border-b border-gray-200">
-
                                 <tr>
-
                                     <th className="text-left px-4 sm:px-6 py-4 text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">
                                         Product Name
                                     </th>
-
                                     <th className="text-left px-4 sm:px-6 py-4 text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">
                                         SKU
                                     </th>
-
                                     <th className="text-left px-4 sm:px-6 py-4 text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">
                                         Category
                                     </th>
-
                                     <th className="text-left px-4 sm:px-6 py-4 text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">
                                         Price
                                     </th>
-
                                     <th className="text-left px-4 sm:px-6 py-4 text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">
                                         Quantity
                                     </th>
-
                                     <th className="text-left px-4 sm:px-6 py-4 text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">
                                         Stock Status
                                     </th>
-
                                     <th className="text-left px-4 sm:px-6 py-4 text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">
                                         Action
                                     </th>
-
                                 </tr>
-
                             </thead>
 
-
-
                             <tbody className="divide-y divide-gray-100">
-
-
-
                                 {loading ? (
+                                    Array.from({ length: 6 }).map((_, index) => (
+                                        <tr key={index}>
+                                            <td className="px-4 sm:px-6 py-4">
+                                                <Skeleton width={150} height={18} />
+                                                <Skeleton
+                                                    width={210}
+                                                    height={12}
+                                                    className="mt-1"
+                                                />
+                                            </td>
 
-                                    Array.from({ length: 6 }).map(
-                                        (_, index) => (
+                                            <td className="px-4 sm:px-6 py-4">
+                                                <Skeleton width={90} height={16} />
+                                            </td>
 
-                                            <tr key={index}>
+                                            <td className="px-4 sm:px-6 py-4">
+                                                <Skeleton
+                                                    width={80}
+                                                    height={28}
+                                                    borderRadius={20}
+                                                />
+                                            </td>
 
-                                               
+                                            <td className="px-4 sm:px-6 py-4">
+                                                <Skeleton width={60} height={18} />
+                                            </td>
 
-                                                <td className="px-4 sm:px-6 py-4">
+                                            <td className="px-4 sm:px-6 py-4">
+                                                <Skeleton width={40} height={18} />
+                                            </td>
 
-                                                    <Skeleton
-                                                        width={150}
-                                                        height={18}
-                                                    />
+                                            <td className="px-4 sm:px-6 py-4">
+                                                <Skeleton
+                                                    width={90}
+                                                    height={28}
+                                                    borderRadius={20}
+                                                />
+                                            </td>
 
-                                                    <Skeleton
-                                                        width={210}
-                                                        height={12}
-                                                        className="mt-1"
-                                                    />
-
-                                                </td>
-
-
-                                              
-
-                                                <td className="px-4 sm:px-6 py-4">
-
-                                                    <Skeleton
-                                                        width={90}
-                                                        height={16}
-                                                    />
-
-                                                </td>
-
-
-                                             
-
-                                                <td className="px-4 sm:px-6 py-4">
-
-                                                    <Skeleton
-                                                        width={80}
-                                                        height={28}
-                                                        borderRadius={20}
-                                                    />
-
-                                                </td>
-
-
-                                              
-                                                <td className="px-4 sm:px-6 py-4">
-
-                                                    <Skeleton
-                                                        width={60}
-                                                        height={18}
-                                                    />
-
-                                                </td>
-
-
-                                              
-
-                                                <td className="px-4 sm:px-6 py-4">
-
-                                                    <Skeleton
-                                                        width={40}
-                                                        height={18}
-                                                    />
-
-                                                </td>
-
-
-                                               
-
-                                                <td className="px-4 sm:px-6 py-4">
-
-                                                    <Skeleton
-                                                        width={90}
-                                                        height={28}
-                                                        borderRadius={20}
-                                                    />
-
-                                                </td>
-
-
-                                                
-
-                                                <td className="px-4 sm:px-6 py-4">
-
-                                                    <div className="flex gap-2">
-
-                                                        <Skeleton
-                                                            width={80}
-                                                            height={36}
-                                                        />
-
-                                                        <Skeleton
-                                                            width={100}
-                                                            height={36}
-                                                        />
-
-                                                    </div>
-
-                                                </td>
-
-                                            </tr>
-
-                                        )
-                                    )
-
+                                            <td className="px-4 sm:px-6 py-4">
+                                                <div className="flex gap-2">
+                                                    <Skeleton width={80} height={36} />
+                                                    <Skeleton width={100} height={36} />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
                                 ) : searchProducts.length > 0 ? (
-
-                                  
                                     searchProducts.map((product) => (
-
                                         <tr
                                             key={product._id}
                                             className="hover:bg-gray-50 transition"
                                         >
-
-
-                                         
-
                                             <td className="px-4 sm:px-6 py-4 max-w-[280px]">
-
                                                 <div className="font-medium text-sm sm:text-base text-gray-900">
                                                     {product.productname}
                                                 </div>
-
                                                 <div className="text-xs text-gray-400 mt-1 line-clamp-3">
                                                     {product.description}
                                                 </div>
-
                                             </td>
 
-
-                                            
-
                                             <td className="px-4 sm:px-6 py-4 text-sm text-gray-600">
-
                                                 <span className="whitespace-nowrap">
                                                     {product.sku}
                                                 </span>
-
                                             </td>
 
-
-                                           
-
                                             <td className="px-4 sm:px-6 py-4">
-
                                                 <span className="inline-block px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-medium whitespace-nowrap">
                                                     {product.category}
                                                 </span>
-
                                             </td>
-
-
-                                           
 
                                             <td className="px-4 sm:px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-
                                                 ₹{product.price}
-
                                             </td>
-
-
-                                           
 
                                             <td className="px-4 sm:px-6 py-4 text-sm font-medium text-gray-900">
-
                                                 {product.quantity}
-
                                             </td>
 
-
-                                           
-
                                             <td className="px-4 sm:px-6 py-4">
-
-                                                {product.quantity === 0 ? (
-
-                                                    <span className="inline-block px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium whitespace-nowrap">
-                                                        Out of Stock
-                                                    </span>
-
-                                                ) : product.quantity <=
-                                                    product.lowStockThreshold ? (
-
-                                                    <span className="inline-block px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-medium whitespace-nowrap">
-                                                        Low Stock
-                                                    </span>
-
-                                                ) : (
-
-                                                    <span className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium whitespace-nowrap">
-                                                        In Stock
-                                                    </span>
-
-                                                )}
-
+                                                <StockBadge
+                                                    quantity={product.quantity}
+                                                    lowStockThreshold={
+                                                        product.lowStockThreshold
+                                                    }
+                                                />
                                             </td>
 
-
-                                           
                                             <td className="px-4 sm:px-6 py-4">
-
                                                 <div className="flex items-center gap-2">
-
                                                     <button
                                                         onClick={() =>
                                                             addProducts(product)
@@ -492,7 +283,6 @@ const AllProductsPage = () => {
                                                     >
                                                         Add stock
                                                     </button>
-
 
                                                     <button
                                                         onClick={() =>
@@ -504,81 +294,142 @@ const AllProductsPage = () => {
                                                     >
                                                         Remove Stock
                                                     </button>
-
                                                 </div>
-
                                             </td>
-
                                         </tr>
-
                                     ))
-
                                 ) : (
-
-                                    
                                     <tr>
-
                                         <td
                                             colSpan="7"
                                             className="px-6 py-12 text-center"
                                         >
-
                                             <p className="text-sm text-gray-500">
                                                 No products found
                                             </p>
-
                                         </td>
-
                                     </tr>
-
                                 )}
-
                             </tbody>
-
                         </table>
-
                     </div>
 
+                    {/* Mobile stacked cards */}
+                    <div className="block md:hidden divide-y divide-gray-100">
+                        {loading ? (
+                            Array.from({ length: 4 }).map((_, index) => (
+                                <div key={index} className="p-4">
+                                    <Skeleton width={150} height={18} />
+                                    <Skeleton width={210} height={12} className="mt-1" />
+
+                                    <div className="grid grid-cols-2 gap-x-3 gap-y-2 mt-3">
+                                        <Skeleton width={80} height={16} />
+                                        <Skeleton width={60} height={16} />
+                                        <Skeleton width={80} height={28} borderRadius={20} />
+                                        <Skeleton width={70} height={28} borderRadius={20} />
+                                    </div>
+
+                                    <div className="flex gap-2 mt-3">
+                                        <Skeleton width={90} height={36} />
+                                        <Skeleton width={110} height={36} />
+                                    </div>
+                                </div>
+                            ))
+                        ) : searchProducts.length > 0 ? (
+                            searchProducts.map((product) => (
+                                <div key={product._id} className="p-4">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div>
+                                            <p className="font-medium text-sm text-gray-900">
+                                                {product.productname}
+                                            </p>
+                                            {product.description && (
+                                                <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                                                    {product.description}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <StockBadge
+                                            quantity={product.quantity}
+                                            lowStockThreshold={
+                                                product.lowStockThreshold
+                                            }
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-x-3 gap-y-1 mt-3 text-xs">
+                                        <span className="text-gray-500">SKU</span>
+                                        <span className="text-gray-700 text-right">
+                                            {product.sku}
+                                        </span>
+
+                                        <span className="text-gray-500">Category</span>
+                                        <span className="text-gray-700 text-right">
+                                            {product.category}
+                                        </span>
+
+                                        <span className="text-gray-500">Price</span>
+                                        <span className="text-gray-700 text-right">
+                                            ₹{product.price}
+                                        </span>
+
+                                        <span className="text-gray-500">Quantity</span>
+                                        <span className="text-gray-700 text-right">
+                                            {product.quantity}
+                                        </span>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 mt-3">
+                                        <button
+                                            onClick={() => addProducts(product)}
+                                            className="flex-1 px-3 py-2 bg-black text-white text-xs rounded-lg hover:bg-gray-800 transition"
+                                        >
+                                            Add stock
+                                        </button>
+
+                                        <button
+                                            onClick={() =>
+                                                deleteProduct(product._id)
+                                            }
+                                            className="flex-1 px-3 py-2 bg-red-700 text-white text-xs rounded-lg hover:bg-red-800 transition"
+                                        >
+                                            Remove Stock
+                                        </button>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="px-6 py-12 text-center">
+                                <p className="text-sm text-gray-500">
+                                    No products found
+                                </p>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-
-              
-
                 {newProducts && (
-
                     <AddProductModal
                         product={newProducts}
-
                         onClose={(updatedProduct) => {
-
                             if (updatedProduct) {
-
-                                setProducts(
-                                    (prevProducts) =>
-                                        prevProducts.map(
-                                            (product) =>
-                                                product._id ===
-                                                    updatedProduct._id
-                                                    ? updatedProduct
-                                                    : product
-                                        )
+                                setProducts((prevProducts) =>
+                                    prevProducts.map((product) =>
+                                        product._id === updatedProduct._id
+                                            ? updatedProduct
+                                            : product
+                                    )
                                 );
-
                             }
 
                             setNewProducts(null);
-
                         }}
                     />
-
                 )}
-
             </div>
-
         </div>
-
     );
-
 };
 
 export default AllProductsPage;
