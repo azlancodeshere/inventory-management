@@ -8,6 +8,8 @@ import {
     ChevronDown,
 } from "lucide-react";
 
+import Skeleton from "react-loading-skeleton";
+
 import HomeNavbar from "./Home/HomeNavbar";
 import SideBar from "../Components/SideBar";
 import Activity from "./Activity/Activity";
@@ -23,14 +25,20 @@ function HomePage() {
 
     const [products, setProducts] = useState([]);
     const [sortType, setSortType] = useState("all");
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getProducts = async () => {
             try {
+                setLoading(true);
+
                 const response = await api.get("/products/all-products");
+
                 setProducts(response.data.data);
             } catch (error) {
                 console.log("Error in getting products:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -81,22 +89,23 @@ function HomePage() {
     return (
         <div className="min-h-screen bg-slate-50">
 
-            {/* Navbar */}
+           
             <HomeNavbar />
 
             <div className="flex">
 
-                {/* Sidebar */}
+              
                 <SideBar />
 
-                {/* Main Content */}
+             
                 <main className="min-w-0 flex-1 p-4 pt-20 sm:p-6 sm:pt-20 lg:p-8 lg:pt-8">
 
-                    {/* ================= HEADER ================= */}
+                  
                     <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
 
                         <div>
                             <div className="mb-2 flex items-center gap-2">
+
                                 <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
                                     Dashboard
                                 </h1>
@@ -104,6 +113,7 @@ function HomePage() {
                                 <span className="hidden rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-600 sm:inline-flex">
                                     Live
                                 </span>
+
                             </div>
 
                             <p className="text-sm text-slate-500 sm:text-base">
@@ -128,10 +138,9 @@ function HomePage() {
                     </div>
 
 
-                    {/* ================= STAT CARDS ================= */}
                     <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
-                        {/* Total Products */}
+                    
                         <div className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
 
                             <div className="flex items-start justify-between">
@@ -142,7 +151,11 @@ function HomePage() {
                                     </p>
 
                                     <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-                                        {totalProducts}
+                                        {loading ? (
+                                            <Skeleton width={60} height={36} />
+                                        ) : (
+                                            totalProducts
+                                        )}
                                     </h2>
                                 </div>
 
@@ -157,6 +170,7 @@ function HomePage() {
                                     size={14}
                                     className="text-green-500"
                                 />
+
                                 <span>
                                     0% from last month
                                 </span>
@@ -165,7 +179,7 @@ function HomePage() {
                         </div>
 
 
-                        {/* Total Stock */}
+                       
                         <div className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
 
                             <div className="flex items-start justify-between">
@@ -176,7 +190,11 @@ function HomePage() {
                                     </p>
 
                                     <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-                                        {totalStock}
+                                        {loading ? (
+                                            <Skeleton width={60} height={36} />
+                                        ) : (
+                                            totalStock
+                                        )}
                                     </h2>
                                 </div>
 
@@ -191,6 +209,7 @@ function HomePage() {
                                     size={14}
                                     className="text-green-500"
                                 />
+
                                 <span>
                                     0% from last month
                                 </span>
@@ -199,7 +218,7 @@ function HomePage() {
                         </div>
 
 
-                        {/* Low Stock */}
+                        
                         <div className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
 
                             <div className="flex items-start justify-between">
@@ -210,7 +229,11 @@ function HomePage() {
                                     </p>
 
                                     <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-                                        {lowStock}
+                                        {loading ? (
+                                            <Skeleton width={60} height={36} />
+                                        ) : (
+                                            lowStock
+                                        )}
                                     </h2>
                                 </div>
 
@@ -227,7 +250,7 @@ function HomePage() {
                         </div>
 
 
-                        {/* Out Of Stock */}
+                       
                         <div className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
 
                             <div className="flex items-start justify-between">
@@ -238,7 +261,11 @@ function HomePage() {
                                     </p>
 
                                     <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-                                        {outOfStock}
+                                        {loading ? (
+                                            <Skeleton width={60} height={36} />
+                                        ) : (
+                                            outOfStock
+                                        )}
                                     </h2>
                                 </div>
 
@@ -257,13 +284,13 @@ function HomePage() {
                     </div>
 
 
-                    {/* ================= MAIN GRID ================= */}
+                   
                     <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
 
-                        {/* ================= STOCK OVERVIEW ================= */}
+                        
                         <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 xl:col-span-2">
 
-                            {/* Header */}
+                           
                             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
                                 <div>
@@ -308,8 +335,51 @@ function HomePage() {
                             </div>
 
 
-                            {/* Chart */}
-                            {chartProducts.length > 0 ? (
+                           
+                            {loading ? (
+
+                                <div className="overflow-x-auto">
+
+                                    <div className="min-w-[500px]">
+
+                                        <div className="h-64 flex items-end gap-4 border-b border-slate-100 px-3 sm:gap-6">
+
+                                            {[1, 2, 3, 4, 5, 6].map(
+                                                (item) => (
+                                                    <div
+                                                        key={item}
+                                                        className="flex h-full min-w-0 flex-1 items-end"
+                                                    >
+                                                        <Skeleton
+                                                            height={`${30 + item * 8}%`}
+                                                            className="w-full rounded-t-lg"
+                                                        />
+                                                    </div>
+                                                )
+                                            )}
+
+                                        </div>
+
+                                        <div className="mt-3 flex gap-4 px-3 sm:gap-6">
+
+                                            {[1, 2, 3, 4, 5, 6].map(
+                                                (item) => (
+                                                    <div
+                                                        key={item}
+                                                        className="min-w-0 flex-1"
+                                                    >
+                                                        <Skeleton height={12} />
+                                                    </div>
+                                                )
+                                            )}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            ) : chartProducts.length > 0 ? (
 
                                 <div className="overflow-x-auto">
 
@@ -344,7 +414,7 @@ function HomePage() {
                                                                     height: `${height}%`,
                                                                     minHeight:
                                                                         quantity >
-                                                                        0
+                                                                            0
                                                                             ? "8px"
                                                                             : "0px",
                                                                 }}
@@ -359,7 +429,7 @@ function HomePage() {
                                         </div>
 
 
-                                        {/* Product names */}
+                                       
                                         <div className="mt-3 flex gap-4 px-3 sm:gap-6">
 
                                             {chartProducts.map(
@@ -399,7 +469,6 @@ function HomePage() {
                         </div>
 
 
-                        {/* ================= RECENT ACTIVITY ================= */}
                         <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
 
                             <div className="mb-6 flex items-center justify-between">
@@ -425,14 +494,54 @@ function HomePage() {
 
                             </div>
 
-                            <Activity products={products} />
+                            {loading ? (
+
+                                <div className="space-y-4">
+
+                                    {[1, 2, 3, 4].map(
+                                        (item) => (
+                                            <div
+                                                key={item}
+                                                className="flex items-center gap-3"
+                                            >
+
+                                                <Skeleton
+                                                    circle
+                                                    width={40}
+                                                    height={40}
+                                                />
+
+                                                <div className="flex-1">
+                                                    <Skeleton
+                                                        width="75%"
+                                                        height={14}
+                                                    />
+
+                                                    <Skeleton
+                                                        width="45%"
+                                                        height={10}
+                                                        className="mt-1"
+                                                    />
+                                                </div>
+
+                                            </div>
+                                        )
+                                    )}
+
+                                </div>
+
+                            ) : (
+
+                                <Activity products={products} />
+
+                            )}
 
                         </div>
 
                     </div>
 
 
-                    {/* ================= QUICK ACTIONS ================= */}
+                   
                     <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
 
                         <button
@@ -441,6 +550,7 @@ function HomePage() {
                             }
                             className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:border-slate-300 hover:shadow-md"
                         >
+
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
                                 <Package size={19} />
                             </div>
@@ -454,6 +564,7 @@ function HomePage() {
                                     View all products
                                 </p>
                             </div>
+
                         </button>
 
 
@@ -463,6 +574,7 @@ function HomePage() {
                             }
                             className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:border-slate-300 hover:shadow-md"
                         >
+
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
                                 <Boxes size={19} />
                             </div>
@@ -476,6 +588,7 @@ function HomePage() {
                                     Manage categories
                                 </p>
                             </div>
+
                         </button>
 
 
@@ -485,6 +598,7 @@ function HomePage() {
                             }
                             className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:border-slate-300 hover:shadow-md"
                         >
+
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50 text-green-600">
                                 <TrendingUp size={19} />
                             </div>
@@ -498,6 +612,7 @@ function HomePage() {
                                     Analyze inventory
                                 </p>
                             </div>
+
                         </button>
 
                     </div>

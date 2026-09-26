@@ -8,6 +8,8 @@ import {
     Boxes,
 } from "lucide-react";
 
+import Skeleton from "react-loading-skeleton";
+
 import api from "../../api/api.js";
 
 
@@ -16,6 +18,7 @@ const Cards = ({ products }) => {
     const [productCalculation, setProductCalculation] = useState(null);
     const [stockCalculation, setStockCalculation] = useState(null);
 
+    const [loading, setLoading] = useState(true);
 
 
     useEffect(() => {
@@ -24,13 +27,12 @@ const Cards = ({ products }) => {
 
             try {
 
-               
+                setLoading(true);
+
                 const productResponse = await api.post(
                     "/calculation/calculate-product"
                 );
 
-
-                
                 const stockResponse = await api.post(
                     "/calculation/calculate-stock"
                 );
@@ -52,7 +54,12 @@ const Cards = ({ products }) => {
                     error
                 );
 
+            } finally {
+
+                setLoading(false);
+
             }
+
         };
 
 
@@ -61,9 +68,6 @@ const Cards = ({ products }) => {
     }, [products]);
 
 
-    
-   
-
     const totalStock = products.reduce(
         (total, product) =>
             total + Number(product.quantity || 0),
@@ -71,19 +75,24 @@ const Cards = ({ products }) => {
     );
 
 
-
     const lowStock = products.filter((product) => {
-    const quantity = Number(product.quantity) || 0;
-    const threshold = Number(product.lowStockThreshold);
 
-    return quantity > 0 && quantity <= threshold;
-}).length;
+        const quantity =
+            Number(product.quantity) || 0;
 
+        const threshold =
+            Number(product.lowStockThreshold);
 
+        return (
+            quantity > 0 &&
+            quantity <= threshold
+        );
+
+    }).length;
 
 
     const outOfStock = products.filter(
-        product =>
+        (product) =>
             Number(product.quantity) === 0
     ).length;
 
@@ -91,18 +100,89 @@ const Cards = ({ products }) => {
     const productChange =
         productCalculation?.percentage;
 
-
     const productChangeType =
         productCalculation?.change;
 
 
-    
     const stockChange =
         stockCalculation?.percentage;
 
-
     const stockChangeType =
         stockCalculation?.change;
+
+
+    
+
+    if (loading) {
+
+        return (
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
+
+                {[1, 2, 3, 4].map((item) => (
+
+                    <div
+                        key={item}
+                        className="bg-white rounded-xl border border-gray-200 p-5"
+                    >
+
+                        {/* Top */}
+
+                        <div className="flex items-center justify-between">
+
+                            <div className="flex-1">
+
+                                <Skeleton
+                                    width={100}
+                                    height={15}
+                                />
+
+                                <div className="mt-2">
+
+                                    <Skeleton
+                                        width={55}
+                                        height={30}
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            <Skeleton
+                                width={44}
+                                height={44}
+                                borderRadius={8}
+                            />
+
+                        </div>
+
+
+                        {/* Bottom */}
+
+                        <div className="mt-4 flex items-center gap-2">
+
+                            <Skeleton
+                                width={45}
+                                height={15}
+                            />
+
+                            <Skeleton
+                                width={100}
+                                height={15}
+                            />
+
+                        </div>
+
+                    </div>
+
+                ))}
+
+            </div>
+
+        );
+
+    }
 
 
     return (
@@ -110,6 +190,7 @@ const Cards = ({ products }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
 
 
+         
 
             <div className="bg-white rounded-xl border border-gray-200 p-5">
 
@@ -143,17 +224,22 @@ const Cards = ({ products }) => {
                 <div className="flex items-center gap-1 mt-4 text-sm">
 
                     {productChangeType === "increase" && (
+
                         <TrendingUp
                             size={16}
                             className="text-green-600"
                         />
+
                     )}
 
+
                     {productChangeType === "decrease" && (
+
                         <TrendingDown
                             size={16}
                             className="text-red-600"
                         />
+
                     )}
 
 
@@ -168,11 +254,16 @@ const Cards = ({ products }) => {
                     >
 
                         {productChangeType === "new"
+
                             ? "New"
+
                             : productChange !== null &&
                               productChange !== undefined
+
                             ? `${productChange}%`
+
                             : "--"
+
                         }
 
                     </span>
@@ -187,7 +278,7 @@ const Cards = ({ products }) => {
             </div>
 
 
-
+           
 
             <div className="bg-white rounded-xl border border-gray-200 p-5">
 
@@ -221,17 +312,22 @@ const Cards = ({ products }) => {
                 <div className="flex items-center gap-1 mt-4 text-sm">
 
                     {stockChangeType === "increase" && (
+
                         <TrendingUp
                             size={16}
                             className="text-green-600"
                         />
+
                     )}
 
+
                     {stockChangeType === "decrease" && (
+
                         <TrendingDown
                             size={16}
                             className="text-red-600"
                         />
+
                     )}
 
 
@@ -246,11 +342,16 @@ const Cards = ({ products }) => {
                     >
 
                         {stockChangeType === "new"
+
                             ? "New"
+
                             : stockChange !== null &&
                               stockChange !== undefined
+
                             ? `${stockChange}%`
+
                             : "--"
+
                         }
 
                     </span>
@@ -265,8 +366,7 @@ const Cards = ({ products }) => {
             </div>
 
 
-
-         
+           
 
             <div className="bg-white rounded-xl border border-gray-200 p-5">
 
@@ -279,9 +379,7 @@ const Cards = ({ products }) => {
                         </p>
 
                         <h3 className="text-2xl font-bold text-gray-900 mt-2">
-
                             {lowStock}
-
                         </h3>
 
                     </div>
@@ -310,8 +408,8 @@ const Cards = ({ products }) => {
             </div>
 
 
+         
 
-        
             <div className="bg-white rounded-xl border border-gray-200 p-5">
 
                 <div className="flex items-center justify-between">
@@ -323,9 +421,7 @@ const Cards = ({ products }) => {
                         </p>
 
                         <h3 className="text-2xl font-bold text-gray-900 mt-2">
-
                             {outOfStock}
-
                         </h3>
 
                     </div>
@@ -354,7 +450,9 @@ const Cards = ({ products }) => {
             </div>
 
         </div>
+
     );
+
 };
 
 

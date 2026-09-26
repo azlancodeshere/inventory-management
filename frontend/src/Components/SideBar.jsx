@@ -22,7 +22,7 @@ const SideBar = () => {
 
     return (
         <>
-            {/* ================= MOBILE HAMBURGER ================= */}
+          
             <button
                 onClick={() => setIsOpen(true)}
                 className="
@@ -46,7 +46,7 @@ const SideBar = () => {
             </button>
 
 
-            {/* ================= MOBILE OVERLAY ================= */}
+          
             {isOpen && (
                 <div
                     onClick={() => setIsOpen(false)}
@@ -61,7 +61,7 @@ const SideBar = () => {
             )}
 
 
-            {/* ================= SIDEBAR ================= */}
+         
             <aside
                 className={`
                     fixed md:static
@@ -96,7 +96,7 @@ const SideBar = () => {
 
                 <div>
 
-                    {/* Mobile close button */}
+                    
                     <div className="flex items-center justify-between mb-5 md:hidden">
 
                         <p className="text-sm font-semibold text-gray-700">
@@ -119,7 +119,7 @@ const SideBar = () => {
                     </p>
 
 
-                    {/* ================= DASHBOARD ================= */}
+                    
                     <button
                         onClick={() => {
                             navigate("/home");
@@ -151,7 +151,7 @@ const SideBar = () => {
                     </button>
 
 
-                    {/* ================= PRODUCTS ================= */}
+                   
                     <button
                         onClick={() => {
                             navigate("/all-products");
@@ -183,7 +183,7 @@ const SideBar = () => {
                     </button>
 
 
-                    {/* ================= CATEGORIES ================= */}
+                    
                     <button
                         onClick={() => {
                             navigate("/categories");
@@ -215,7 +215,7 @@ const SideBar = () => {
                     </button>
 
 
-                    {/* ================= REPORTS ================= */}
+                    
                     <button
                         onClick={() => {
                             navigate("/reports");
@@ -247,7 +247,7 @@ const SideBar = () => {
                     </button>
 
 
-                    {/* ================= SETTINGS ================= */}
+                    
                     <button
                         onClick={() => {
                             navigate("/settings");
@@ -280,7 +280,7 @@ const SideBar = () => {
                 </div>
 
 
-                {/* ================= LOGOUT ================= */}
+                
                 <button
                     onClick={logout}
                     className="

@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import "react-loading-skeleton/dist/skeleton.css";
 
 import Register from "./pages/RegisterPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
