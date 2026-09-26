@@ -19,7 +19,7 @@ app.use(
     cors({
         origin: [
             "http://localhost:5173",
-            "https://inventory-management-omega-lemon.vercel.app"
+            "https://stockflow-inv-2026.vercel.app"
         ],
         credentials: true,
     })
