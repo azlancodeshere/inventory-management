@@ -14,22 +14,25 @@ dotenv.config();
 
 const app = express();
 
-// CORS
+
 app.use(
     cors({
         origin: [
             "http://localhost:5173",
-            "https://stockflow-inv-2026.vercel.app"
+            "https://stockflow-inv-2026.vercel.app",
+            "https://inventory-management-nsjobtezq-azlancodesheres-projects.vercel.app"
         ],
         credentials: true,
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
     })
 );
 
-// Middlewares
+
 app.use(express.json());
 app.use(cookieParser());
 
-// Health check
+
 app.get("/api/health", (req, res) => {
     res.status(200).json({
         success: true,
@@ -37,22 +40,22 @@ app.get("/api/health", (req, res) => {
     });
 });
 
-// Routes
+
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/calculation", calculationRoutes);
 
-// 404 middleware — ALWAYS keep this at the end
+
 app.use((req, res, next) => {
     res.status(404).json(
         new ApiError(404, "Route not found")
     );
 });
 
-// Database
+
 connectDB();
 
-// Start server
+
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
 });
