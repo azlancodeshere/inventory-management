@@ -1,0 +1,15 @@
+name: Ping Backend
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping backend
+        run: |
+          curl -f https://inventory-management-backend-f52u.onrender.com/api/health || exit 1
