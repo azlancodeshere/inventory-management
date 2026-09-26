@@ -133,12 +133,7 @@ function LoginPage() {
                                                     Password
                                                 </label>
 
-                                                <a
-                                                    href="#"
-                                                    className="mb-2 text-xs font-semibold text-blue-600 transition hover:text-blue-700"
-                                                >
-                                                    Forgot Password?
-                                                </a>
+                                                
 
                                             </div>
 
