@@ -74,12 +74,23 @@ function HomePage() {
         0
     );
 
-    const lowStock = products.filter(
-        (product) => {
-            const quantity = Number(product.quantity) || 0;
-            return quantity > 0 && quantity <= 5;
-        }
-    ).length;
+
+    const lowStock = products.filter((product)=>{
+
+        const quantity = Number(product.quantity) || 0;
+
+        const threshold = Number(product.lowStockThreshold);
+
+        return(
+            quantity > 0 && 
+            quantity <= threshold
+        );
+
+    }).length;
+
+
+    
+    
 
     const outOfStock = products.filter(
         (product) =>
